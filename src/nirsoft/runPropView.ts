@@ -11,35 +11,14 @@ export default async function runGUIPropView(args: Array<string>) {
         stderr: "piped"
     });
 
-    let response: string = "";
-    let decoder = new TextDecoder();
-
-    if (process) {
-        const buff = new Uint8Array(1);
-        while (true) {
-            try {
-                let result = await process.stdout?.read(buff);
-                if (!result) {
-                    break;
-                }
-                response = response + decoder.decode(buff);
-            } catch (ex) {
-                break;
-            }
-        }
-    }
-
     let status = await process.status();
     process.stdout?.close();
     process.stderr?.close();
     process.close();
 
-    response = response.trim();
-
     let result = {
         success: status.success,
-        cmd: listArgs,
-        result: response
+        cmd: listArgs
     }
     return result;
 }
